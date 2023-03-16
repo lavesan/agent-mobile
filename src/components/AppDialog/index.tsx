@@ -1,4 +1,7 @@
+import { View } from "react-native";
 import { Button, Dialog, Portal, Text } from "react-native-paper";
+
+import { styles } from "./styles";
 
 interface IAppDialogProps {
   show: boolean;
@@ -26,10 +29,27 @@ export const AppDialog = ({
         <Dialog.Content>
           <Text variant="bodyMedium">{description}</Text>
         </Dialog.Content>
-        <Dialog.Actions>
-          <Button onPress={onClose}>{secondaryButton}</Button>
-          <Button onPress={onPrimaryButtonPress}>{primaryButton}</Button>
-        </Dialog.Actions>
+        <Dialog.Content>
+          <View style={styles.buttonsContainer}>
+            <Button
+              style={[
+                styles.buttonsContainerElem,
+                styles.buttonsContainerFirstElem,
+              ]}
+              onPress={onClose}
+              mode="outlined"
+            >
+              {secondaryButton}
+            </Button>
+            <Button
+              style={styles.buttonsContainerElem}
+              onPress={onPrimaryButtonPress}
+              mode="contained"
+            >
+              {primaryButton}
+            </Button>
+          </View>
+        </Dialog.Content>
       </Dialog>
     </Portal>
   );

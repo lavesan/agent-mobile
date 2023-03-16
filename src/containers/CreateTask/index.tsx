@@ -1,13 +1,15 @@
-import { View, ToastAndroid } from "react-native";
+import { View } from "react-native";
 import { Button } from "react-native-paper";
-// import Toast from 'react-native-root-toast';
-
-import { REQUIRED_MSG } from "@helpers/validation.helper";
-import { IPageNavigationProps } from "@models/pageNavigation.model";
-
+import toast from "react-native-toast-message";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+
+import { REQUIRED_MSG } from "@helpers/validation.helper";
+import { IPageNavigationProps } from "@models/pageNavigation.model";
+import { formStyles } from "@styles/form.styles";
+import { screenStyles } from "@styles/screen.styles";
+
 import { TaskService } from "@services/task.service";
 import { useAppContext } from "@hooks/useAppContext";
 import { AppInput } from "@components/AppInput";
@@ -32,12 +34,7 @@ const CreateTask = ({}: IPageNavigationProps<"CreateTask">) => {
   const { show, toogleShow } = useToogle();
   const { navigateHome } = useNavigateHome();
 
-  const {
-    handleSubmit,
-    reset,
-    control,
-    formState: { errors },
-  } = useForm<IForm>({
+  const { handleSubmit, setValue, control } = useForm<IForm>({
     mode: "all",
     resolver: yupResolver(validationSchema),
   });
@@ -48,23 +45,44 @@ const CreateTask = ({}: IPageNavigationProps<"CreateTask">) => {
     taskService
       .create(form)
       .then(() => {
-        ToastAndroid.show("Tarefa salva!", ToastAndroid.TOP);
-        reset();
+        toogleShow();
+        setValue("title", "", {
+          shouldDirty: false,
+          shouldTouch: false,
+          shouldValidate: false,
+        });
+        setValue("description", "", {
+          shouldDirty: false,
+          shouldTouch: false,
+          shouldValidate: false,
+        });
       })
-      .catch((err) => {
-        ToastAndroid.show(
-          "Aconteceu um erro ao salvar os dados",
-          ToastAndroid.TOP
-        );
-      })
+      .catch(() =>
+        toast.show({
+          type: "error",
+          text1: "Aconteceu um erro ao salvar a tarefa",
+        })
+      )
       .finally(() => setIsLoading(false));
   });
 
   return (
-    <View>
-      <AppInput<IForm> label="Título" control={control} name="title" />
-      <AppInput<IForm> label="Descrição" control={control} name="description" />
-      <Button onPress={onSubmit}>Criar</Button>
+    <View style={screenStyles.centerView}>
+      <AppInput<IForm>
+        label="Título"
+        control={control}
+        name="title"
+        style={formStyles.field}
+      />
+      <AppInput<IForm>
+        label="Descrição"
+        control={control}
+        name="description"
+        style={formStyles.lastField}
+      />
+      <Button onPress={onSubmit} mode="contained">
+        Criar
+      </Button>
       <AppDialog
         show={show}
         title="Tarefa criada"

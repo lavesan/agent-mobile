@@ -1,6 +1,9 @@
-import { StyleSheet, ActivityIndicator, View } from "react-native";
-import { Routes } from "./src/routes";
+import { useState } from "react";
+import { ActivityIndicator } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
+import Toast from "react-native-toast-message";
+
+import { Routes } from "./src/routes";
 import {
   initialWindowMetrics,
   SafeAreaProvider,
@@ -9,7 +12,7 @@ import { RootSiblingParent } from "react-native-root-siblings";
 
 import { theme } from "./src/config/theme";
 import { AppContext } from "./src/config/app.context";
-import { useState } from "react";
+import { styles } from "./App.styles";
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false);
@@ -19,20 +22,21 @@ export default function App() {
       <RootSiblingParent>
         <SafeAreaProvider initialMetrics={initialWindowMetrics}>
           <PaperProvider theme={theme}>
-            <View>{isLoading && <ActivityIndicator size="large" />}</View>
-            <Routes />
+            <>
+              {isLoading && (
+                <ActivityIndicator
+                  animating
+                  hidesWhenStopped
+                  size="large"
+                  style={styles.loading}
+                />
+              )}
+              <Routes style={isLoading ? styles.contentOnLoading : {}} />
+              <Toast />
+            </>
           </PaperProvider>
         </SafeAreaProvider>
       </RootSiblingParent>
     </AppContext.Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

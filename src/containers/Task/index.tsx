@@ -1,13 +1,17 @@
 import { useEffect } from "react";
-import { ToastAndroid, View } from "react-native";
+import { View } from "react-native";
 import { Button } from "react-native-paper";
+import toast from "react-native-toast-message";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+import { formStyles } from "@styles/form.styles";
+import { screenStyles } from "@styles/screen.styles";
 
 import { useAppContext } from "@hooks/useAppContext";
 import { IPageNavigationProps } from "@models/pageNavigation.model";
 import { TaskService } from "@services/task.service";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { REQUIRED_MSG } from "@helpers/validation.helper";
 import { AppInput } from "@components/AppInput";
 import { AppCheckbox } from "@components/AppCheckbox";
@@ -40,14 +44,24 @@ const Task = ({ route, navigation }: IPageNavigationProps<"Task">) => {
   });
 
   const fetchTask = () => {
-    taskService.findById(id).then((res) => {
-      if (!res)
-        return ToastAndroid.show("Tarefa não encontrada", ToastAndroid.TOP);
+    setIsLoading(true);
+    taskService
+      .findById(id)
+      .then((res) => {
+        if (!res)
+          return toast.show({ type: "error", text1: "Tarefa não encontrada" });
 
-      setValue("title", res.title);
-      setValue("description", res.description);
-      setValue("isDone", res.isDone);
-    });
+        setValue("title", res.title);
+        setValue("description", res.description);
+        setValue("isDone", res.isDone);
+      })
+      .catch(() =>
+        toast.show({
+          type: "error",
+          text1: "Aconteceu um erro ao procurar a tarefa",
+        })
+      )
+      .finally(() => setIsLoading(false));
   };
 
   const onReturnToTasksList = () => {
@@ -59,7 +73,9 @@ const Task = ({ route, navigation }: IPageNavigationProps<"Task">) => {
     setIsLoading(true);
     taskService
       .update(id, form)
-      .then(() => {})
+      .then(() => {
+        toogleShow();
+      })
       .catch(() => {})
       .finally(() => setIsLoading(false));
   });
@@ -72,11 +88,28 @@ const Task = ({ route, navigation }: IPageNavigationProps<"Task">) => {
   }, [navigation]);
 
   return (
-    <View>
-      <AppInput<IForm> label="Título" control={control} name="title" />
-      <AppInput<IForm> label="Descrição" control={control} name="description" />
-      <AppCheckbox<IForm> label="Concluída" control={control} name="isDone" />
-      <Button onPress={onSubmit}>Editar tarefa</Button>
+    <View style={screenStyles.centerView}>
+      <AppInput<IForm>
+        label="Título"
+        control={control}
+        name="title"
+        style={formStyles.field}
+      />
+      <AppInput<IForm>
+        label="Descrição"
+        control={control}
+        name="description"
+        style={formStyles.field}
+      />
+      <AppCheckbox<IForm>
+        label="Concluída"
+        control={control}
+        name="isDone"
+        style={formStyles.lastField}
+      />
+      <Button onPress={onSubmit} mode="contained">
+        Editar tarefa
+      </Button>
       <AppDialog
         show={show}
         title="Tarefa editada"

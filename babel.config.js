@@ -14,6 +14,7 @@ module.exports = function (api) {
             "@helpers": "./src/helpers",
             "@config": "./src/config",
             "@hooks": "./src/hooks",
+            "@styles": "./src/styles",
           },
         },
       ],

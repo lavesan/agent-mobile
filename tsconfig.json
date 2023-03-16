@@ -11,7 +11,8 @@
       "@models/*": ["models/*"],
       "@helpers/*": ["helpers/*"],
       "@config/*": ["config/*"],
-      "@hooks/*": ["hooks/*"]
+      "@hooks/*": ["hooks/*"],
+      "@styles/*": ["styles/*"]
     },
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true

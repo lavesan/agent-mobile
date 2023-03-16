@@ -1,18 +1,23 @@
-import { View } from "react-native";
-import { TextInput } from "react-native-paper";
+import { useMemo } from "react";
+import { StyleProp, View, ViewStyle } from "react-native";
+import { TextInput, Text } from "react-native-paper";
 import { useController, Control, FieldValues } from "react-hook-form";
 import { Path } from "react-hook-form";
+
+import { formStyles } from "@styles/form.styles";
 
 interface IAppInputProps<IForm extends FieldValues> {
   control: Control<IForm, string>;
   label: string;
   name: Path<IForm>;
+  style?: StyleProp<ViewStyle>;
 }
 
 export function AppInput<IForm extends FieldValues>({
   control,
   name,
   label,
+  style = {},
 }: IAppInputProps<IForm>) {
   const {
     field: { onChange, value },
@@ -22,14 +27,21 @@ export function AppInput<IForm extends FieldValues>({
     control,
   });
 
+  const errorMsg = useMemo<string>(
+    () => errors[name]?.message?.toString() || "",
+    [errors]
+  );
+
   return (
-    <View>
+    <View style={style}>
       <TextInput
+        mode="outlined"
         label={label}
         value={value}
         onChangeText={onChange}
-        error={!!errors[name]?.message}
+        error={!!errorMsg}
       />
+      {errorMsg && <Text style={formStyles.fieldErrorMsg}>{errorMsg}</Text>}
     </View>
   );
 }

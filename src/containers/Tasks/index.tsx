@@ -1,11 +1,15 @@
 import { ScrollView, View } from "react-native";
-import { Button, Card, Text, Checkbox } from "react-native-paper";
+import { Button } from "react-native-paper";
+import toast from "react-native-toast-message";
+
+import { styles } from "./styles";
 
 import { Task } from "@models/task.model";
 import { TaskService } from "@services/task.service";
 import { useEffect, useState } from "react";
 import { useAppContext } from "@hooks/useAppContext";
 import { IPageNavigationProps } from "@models/pageNavigation.model";
+import { TaskCard } from "./TaskCard";
 
 const Tasks = ({ navigation }: IPageNavigationProps<"Tasks">) => {
   const taskService = TaskService.getInstance();
@@ -14,14 +18,12 @@ const Tasks = ({ navigation }: IPageNavigationProps<"Tasks">) => {
 
   const [tasks, setTasks] = useState<Task[]>([]);
 
-  const navigateToTask = (id: string) => {
-    navigation.navigate("Task", {
-      id,
-    });
-  };
-
   const navigateToCreateTask = () => {
     navigation.navigate("CreateTask");
+  };
+
+  const navigateToTaskReport = () => {
+    navigation.navigate("TaskReport");
   };
 
   const fetchTasks = () => {
@@ -29,13 +31,13 @@ const Tasks = ({ navigation }: IPageNavigationProps<"Tasks">) => {
     taskService
       .findAll()
       .then((res) => setTasks(res))
-      .catch((err) => {})
+      .catch(() =>
+        toast.show({
+          type: "error",
+          text1: "Aconteceu um erro ao procurar as tarefas",
+        })
+      )
       .finally(() => setIsLoading(false));
-  };
-
-  const toogleIsDone = async (id: string, isDone: boolean) => {
-    await taskService.update(id, { isDone });
-    fetchTasks();
   };
 
   useEffect(() => {
@@ -47,27 +49,27 @@ const Tasks = ({ navigation }: IPageNavigationProps<"Tasks">) => {
 
   return (
     <View>
-      <View>
-        <Button icon="brush" mode="contained" onPress={navigateToCreateTask}>
+      <View style={styles.headerContainer}>
+        <Button
+          icon="brush"
+          mode="contained"
+          onPress={navigateToCreateTask}
+          style={styles.headerContainerButton}
+        >
           Adicionar tarefa
+        </Button>
+        <Button
+          icon="file-cabinet"
+          mode="contained"
+          onPress={navigateToTaskReport}
+          style={styles.headerContainerButton}
+        >
+          Ver relatório
         </Button>
       </View>
       <ScrollView>
-        {tasks.map(({ id, title, description, isDone }) => (
-          <Card key={id} onPress={() => navigateToTask(id)}>
-            <Card.Title
-              title={title}
-              right={() => (
-                <Checkbox
-                  status={isDone ? "checked" : "unchecked"}
-                  onPress={() => toogleIsDone(id, !isDone)}
-                />
-              )}
-            />
-            <Card.Content>
-              <Text variant="bodyMedium">{description}</Text>
-            </Card.Content>
-          </Card>
+        {tasks.map((task) => (
+          <TaskCard key={task.id} {...task} fetchTasks={fetchTasks} />
         ))}
       </ScrollView>
     </View>

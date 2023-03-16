@@ -58,6 +58,14 @@ export class TaskService extends AsyncService {
     };
   }
 
+  async delete(id: string): Promise<void> {
+    const tasks = await this.getTasks();
+    const task = tasks.find((task) => task.id === id);
+    if (!task) throw new Error("task not found");
+
+    await this.setTasks(tasks.filter((task) => task.id !== id));
+  }
+
   static getInstance() {
     if (!this.INSTANCE) this.INSTANCE = new TaskService();
     return this.INSTANCE;
