@@ -35,6 +35,7 @@ export function AppInput<IForm extends FieldValues>({
   return (
     <View style={style}>
       <TextInput
+        testID={`input-${name}`}
         mode="outlined"
         label={label}
         value={value}

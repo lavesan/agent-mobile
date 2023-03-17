@@ -27,10 +27,13 @@ export function AppCheckbox<IForm extends FieldValues>({
   return (
     <View style={[style, styles.container]}>
       <Checkbox
+        testID={`checkbox-${name}`}
         status={value ? "checked" : "unchecked"}
         onPress={() => onChange(!value)}
       />
-      <Text style={styles.containerLabel}>{label}</Text>
+      <Text style={styles.containerLabel} onPress={() => onChange(!value)}>
+        {label}
+      </Text>
     </View>
   );
 }

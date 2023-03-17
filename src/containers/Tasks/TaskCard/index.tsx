@@ -65,13 +65,18 @@ export const TaskCard = ({
   };
 
   return (
-    <Card onPress={() => navigateToTask(id)} style={styles.cardContainer}>
+    <Card
+      testID={`card-container-${id}`}
+      onPress={() => navigateToTask(id)}
+      style={styles.cardContainer}
+    >
       <Card.Title
         title={title}
         right={() => (
           <View style={styles.cardContainerActions}>
             <IconButton
               icon="trash-can"
+              testID={`trash-can-${id}`}
               iconColor={colors.error}
               onPress={() => deleteTask(id)}
             />

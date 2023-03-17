@@ -9,4 +9,7 @@ export const styles = StyleSheet.create({
   headerContainerButton: {
     width: "49%",
   },
+  tasksContainerMargin: {
+    marginBottom: 56,
+  },
 });

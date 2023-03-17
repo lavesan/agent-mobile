@@ -1,4 +1,4 @@
-import { ScrollView, View } from "react-native";
+import { ScrollView, View, Platform } from "react-native";
 import { Button } from "react-native-paper";
 import toast from "react-native-toast-message";
 
@@ -67,7 +67,9 @@ const Tasks = ({ navigation }: IPageNavigationProps<"Tasks">) => {
           Ver relatório
         </Button>
       </View>
-      <ScrollView>
+      <ScrollView
+        style={Platform.OS === "android" ? styles.tasksContainerMargin : {}}
+      >
         {tasks.map((task) => (
           <TaskCard key={task.id} {...task} fetchTasks={fetchTasks} />
         ))}

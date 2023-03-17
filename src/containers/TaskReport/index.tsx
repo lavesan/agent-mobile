@@ -20,7 +20,9 @@ const TaskReport = ({ navigation }: IPageNavigationProps<"TaskReport">) => {
       setIsLoading(true);
       taskService
         .getTasksReport()
-        .then((res) => setReport(res))
+        .then((res) => {
+          setReport(res);
+        })
         .catch(() =>
           toast.show({
             type: "error",

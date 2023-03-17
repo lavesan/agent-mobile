@@ -41,6 +41,9 @@ const Task = ({ route, navigation }: IPageNavigationProps<"Task">) => {
   const { control, handleSubmit, setValue } = useForm<IForm>({
     mode: "all",
     resolver: yupResolver(validationSchema),
+    defaultValues: {
+      isDone: false,
+    },
   });
 
   const fetchTask = () => {
@@ -76,7 +79,12 @@ const Task = ({ route, navigation }: IPageNavigationProps<"Task">) => {
       .then(() => {
         toogleShow();
       })
-      .catch(() => {})
+      .catch((err: any) =>
+        toast.show({
+          type: "error",
+          text1: "Aconteceu um erro ao atualizar a tarefa",
+        })
+      )
       .finally(() => setIsLoading(false));
   });
 
