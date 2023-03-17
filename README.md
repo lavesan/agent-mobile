@@ -19,12 +19,12 @@ Necessário estar na mesma rede que o local que está executando a aplicação
 2. Executar o projeto com `yarn start` ou `npm start`
 3. Abrir o `aplicativo de câmera` e escanear o qr code que ai aparecer no terminal
 
-## Como executar em Android com o dispositivo conenctado com o pc (como com usb)
+## Como executar em Android com o dispositivo conectado com o pc (como com usb)
 
 1. Instalar as dependências com `yarn` ou `npm i`
 2. Executar o projeto com `yarn android` ou `npm run android`
 
-## Como executar em ios com o dispositivo conenctado com o pc (como com usb)
+## Como executar em ios com o dispositivo conectado com o pc (como com usb)
 
 1. Instalar as dependências com `yarn` ou `npm i`
 2. Executar o projeto com `yarn ios` ou `npm run ios`
